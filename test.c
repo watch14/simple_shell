@@ -66,6 +66,7 @@ void execute(char *command, char **env)
 	int i = 0, j;
 
 	char *token = strtok(command, " \t\n");
+	pid_t pid;
 
 	while (token != NULL)
 	{
@@ -77,7 +78,7 @@ void execute(char *command, char **env)
 	for (j = 0; j < i; j++)
 		handle_special(argv[j]);
 
-	pid_t pid = fork();
+	pid = fork();
 
 	if (pid == -1)
 	{
@@ -99,10 +100,15 @@ void execute(char *command, char **env)
 	}
 }
 
-int main(int ac, char **av, char **env)
+int main(int argc, char **argv, char **env)
 {
-	char *buf = NULL;
-	size_t n = 0;
+	char *buf;
+        size_t n = 0;
+
+	(void)argc;
+	(void)argv;
+
+	buf = NULL;
 
 	printf("$ ");
 	getline(&buf, &n, stdin);
@@ -117,4 +123,5 @@ int main(int ac, char **av, char **env)
 		getline(&buf, &n, stdin);
 	}
 	free(buf);
+	return 0;
 }
