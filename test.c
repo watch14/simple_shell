@@ -3,31 +3,79 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
-void add_path(char *a, char *exe)
+char *get_env(char *env_var, char **env)
 {
-	char *path = "/bin/";
+	int i = 0;
+	char *key;
 
-	strcpy(exe, path);
-	strcat(exe, a);
+	while (env[i])
+	{
+		key = strtok(env[i], "=");
+		if (strcmp(env_var, key) == 0)
+			return (strtok(NULL, "\n"));
+		i++;
+	}
+	return (NULL);
+}
+
+void add_path(char *a, char *exe, char **env)
+{
+	char *path = get_env("PATH", env);
+	char *token;
+	struct stat st;
+
+	token = strtok(path, ":");
+
+	while (token != NULL)
+	{
+		strcpy(exe, token);
+		strcat(exe, "/");
+		strcat(exe, a);
+
+		if (stat(exe, &st) == 0)
+			return;
+
+		token = strtok(NULL, ":");
+	}
+
+	exe[0] = '\0';
+}
+
+void handle_special(char *arg)
+{
+	int len = strlen(arg);
+	int k;
+
+	for (k = 0; k < len; k++)
+	{
+		if (arg[k] == '"' || arg[k] == '\'' || arg[k] == '`' || arg[k] == '\\' || arg[k] == '*' || arg[k] == '&' || arg[k] == '#')
+		{
+			memmove(arg + k + 1, arg + k, len - k + 1);
+			arg[k] = '\\';
+			len++;
+			k++;
+		}
+	}
 }
 
 void execute(char *command, char **env)
 {
-	char *cmd = strtok(command, " \t\n");
 	char *argv[20];
-	int i = 0;
+	int i = 0, j;
 
-	while (cmd != NULL)
+	char *token = strtok(command, " \t\n");
+
+	while (token != NULL)
 	{
-		argv[i++] = cmd;
-		cmd = strtok(NULL, " \t\n");
+		argv[i++] = token;
+		token = strtok(NULL, " \t\n");
 	}
 	argv[i] = NULL;
 
-	char exe[50];
-
-	add_path(argv[0], exe);
+	for (j = 0; j < i; j++)
+		handle_special(argv[j]);
 
 	pid_t pid = fork();
 
@@ -35,13 +83,17 @@ void execute(char *command, char **env)
 	{
 		perror("fork");
 	}
-	else if (pid == 0)/* Child process*/
+	else if (pid == 0)
 	{
-		execve(exe, argv, env);
+		char exe[50];
+
+		add_path(argv[0], exe, env);
+		execvp(exe, argv);
 		perror("hsh");
+
 		exit(1);
 	}
-	else/*Parent process*/
+	else
 	{
 		wait(NULL);
 	}
@@ -65,5 +117,4 @@ int main(int ac, char **av, char **env)
 		getline(&buf, &n, stdin);
 	}
 	free(buf);
-	return (0);
 }
