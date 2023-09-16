@@ -1,48 +1,5 @@
 #include "s_shell.h"
 
-/**
- * main - entry point
- * @ac: arg count
- * @av: arg vector
- *
- * Return: 0 on success, 1 on error
- */
-int main(int ac, char **av)
-{
-	info_t info[] = {INFO_INIT};
-	int fd = 2;
-
-	asm("mov %1, %0\n\t"
-		"add $3, %0"
-		: "=r"(fd)
-		: "r"(fd));
-
-	if (ac == 2)
-	{
-		fd = open(av[1], O_RDONLY);
-		if (fd == -1)
-		{
-			if (errno == EACCES)
-				exit(126);
-			if (errno == ENOENT)
-			{
-				_eputs(av[0]);
-				_eputs(": 0: Can't open ");
-				_eputs(av[1]);
-				_eputchar('\n');
-				_eputchar(BUF_FLUSH);
-				exit(127);
-			}
-			return (EXIT_FAILURE);
-		}
-		info->readfd = fd;
-	}
-	populate_env_list(info);
-	read_history(info);
-	hsh(info, av);
-	return (EXIT_SUCCESS);
-}
-
 void _eputs(char *str);
 int _eputchar(char c);
 int populate_env_list(info_t *info);
@@ -120,6 +77,49 @@ int bfree(void **ptr);
 int write_history(info_t *info);
 int _putsfd(char *str, int fd);
 int _putfd(char c, int fd);
+
+/**
+ * main - entry point
+ * @ac: arg count
+ * @av: arg vector
+ *
+ * Return: 0 on success, 1 on error
+ */
+int main(int ac, char **av)
+{
+	info_t info[] = {INFO_INIT};
+	int fd = 2;
+
+	asm("mov %1, %0\n\t"
+		"add $3, %0"
+		: "=r"(fd)
+		: "r"(fd));
+
+	if (ac == 2)
+	{
+		fd = open(av[1], O_RDONLY);
+		if (fd == -1)
+		{
+			if (errno == EACCES)
+				exit(126);
+			if (errno == ENOENT)
+			{
+				_eputs(av[0]);
+				_eputs(": 0: Can't open ");
+				_eputs(av[1]);
+				_eputchar('\n');
+				_eputchar(BUF_FLUSH);
+				exit(127);
+			}
+			return (EXIT_FAILURE);
+		}
+		info->readfd = fd;
+	}
+	populate_env_list(info);
+	read_history(info);
+	hsh(info, av);
+	return (EXIT_SUCCESS);
+}
 
 /**
  *_eputs - prints an input string
@@ -598,7 +598,8 @@ void find_cmd(info_t *info)
 	}
 	else
 	{
-		if ((interactive(info) || _getenv(info, "PATH=") || info->argv[0][0] == '/') && is_cmd(info, info->argv[0]))
+		if ((interactive(info) || _getenv(info, "PATH=") || info->argv[0][0] == '/')
+			&& is_cmd(info, info->argv[0]))
 			fork_cmd(info);
 		else if (*(info->arg) != '\n')
 		{
@@ -1541,8 +1542,7 @@ list_t *node_starts_with(list_t *node, char *prefix, char c)
  */
 char *_strchr(char *s, char c)
 {
-	do
-	{
+	do {
 		if (*s == c)
 			return (s);
 	} while (*s++ != '\0');
@@ -1962,8 +1962,7 @@ char *convert_number(long int num, int base, int flags)
 	ptr = &buffer[49];
 	*ptr = '\0';
 
-	do
-	{
+	do {
 		*--ptr = array[n % base];
 		n /= base;
 	} while (n != 0);
