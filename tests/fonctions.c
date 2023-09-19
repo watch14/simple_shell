@@ -1,9 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
+#include "main.h"
+
+/**
+ * get_env - Get the value of an environment variable.
+ * @env_var: The name of the environment variable to retrieve.
+ * @env: The array of environment variables.
+ *
+ * Return: The value of the specified environment, or NULL if not found.
+ */
 
 char *get_env(char *env_var, char **env)
 {
@@ -19,6 +22,13 @@ char *get_env(char *env_var, char **env)
 	}
 	return (NULL);
 }
+
+/**
+ * add_path - Add the path of the executable to the command.
+ * @a: The command or executable.
+ * @exe: The buffer to store the full path.
+ * @env: The environment variables array.
+ */
 
 void add_path(char *a, char *exe, char **env)
 {
@@ -43,6 +53,11 @@ void add_path(char *a, char *exe, char **env)
 	exe[0] = '\0';
 }
 
+/**
+ * handle_special - Handle special characters in an argument.
+ * @arg: The argument to process for special characters.
+ */
+
 void handle_special(char *arg)
 {
 	int len = strlen(arg);
@@ -50,7 +65,13 @@ void handle_special(char *arg)
 
 	for (k = 0; k < len; k++)
 	{
-		if (arg[k] == '"' || arg[k] == '\'' || arg[k] == '`' || arg[k] == '\\' || arg[k] == '*' || arg[k] == '&' || arg[k] == '#')
+		if (arg[k] == '"' ||
+				arg[k] == '\'' ||
+				arg[k] == '`' ||
+				arg[k] == '\\' ||
+				arg[k] == '*' ||
+				arg[k] == '&' ||
+				arg[k] == '#')
 		{
 			memmove(arg + k + 1, arg + k, len - k + 1);
 			arg[k] = '\\';
@@ -59,6 +80,12 @@ void handle_special(char *arg)
 		}
 	}
 }
+
+/**
+ * execute - Execute a command in a new process.
+ * @command: The command to execute.
+ * @env: The environment variables array.
+ */
 
 void execute(char *command, char **env)
 {
@@ -98,30 +125,4 @@ void execute(char *command, char **env)
 	{
 		wait(NULL);
 	}
-}
-
-int main(int argc, char **argv, char **env)
-{
-	char *buf;
-        size_t n = 0;
-
-	(void)argc;
-	(void)argv;
-
-	buf = NULL;
-
-	printf("$ ");
-	getline(&buf, &n, stdin);
-	while (buf)
-	{
-		if (strcmp(buf, "exit\n") == 0)
-			break;
-
-		execute(buf, env);
-
-		printf("$ ");
-		getline(&buf, &n, stdin);
-	}
-	free(buf);
-	return (0);
 }
