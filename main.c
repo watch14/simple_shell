@@ -9,6 +9,7 @@
  * Return: Always 0 (successful execution)
  */
 
+
 int main(int argc, char **argv, char **env)
 {
 	char *buf = NULL;

@@ -98,6 +98,7 @@ void execute(char *command, char **env)
 	argv[i] = NULL;
 	for (j = 0; j < i; j++)
 		handle_special(argv[j]);
+
 	pid = fork();
 
 	if (pid == -1)
@@ -111,7 +112,6 @@ void execute(char *command, char **env)
 		add_path(argv[0], exe, env);
 		execvp(exe, argv);
 		perror("hsh");
-
 		exit(1);
 	}
 	else
