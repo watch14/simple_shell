@@ -58,16 +58,23 @@ void add_path(char *a, char *exe, char **env)
  * @arg: The argument to process for special characters.
  */
 
-void handle_special(char *arg) {
+void handle_special(char *arg)
+{
 	int len = strlen(arg);
 	int k;
 
-	for (k = 0; k < len; k++) {
-		if (arg[k] == '"' || arg[k] == '\'' || arg[k] == '`' || arg[k] == '\\' || arg[k] == '*' || arg[k] == '&' || arg[k] == '#' || arg[k] == '|') {
-			memmove(arg + k + 1, arg + k, len - k + 1);
-			arg[k] = '\\';
-			len++;
-			k++;
+	for (k = 0; k < len; k++)
+	{
+		if (arg[k] == '"' || arg[k] == '\'' ||
+				arg[k] == '`' || arg[k] == '\\' ||
+				arg[k] == '*' || arg[k] == '&' ||
+				arg[k] == '#' || arg[k] == '|') {
+			{
+				memmove(arg + k + 1, arg + k, len - k + 1);
+				arg[k] = '\\';
+				len++;
+				k++;
+			}
 		}
 	}
 }
@@ -78,40 +85,45 @@ void handle_special(char *arg) {
  * @env: The environment variables array.
  */
 
-void execute(char *command, char **env) {
+void execute(char *command, char **env)
+{
 	char *argv[20];
 	int i = 0, j;
-
 	char *token = strtok(command, " \t\n");
 	pid_t pid;
 
-	while (token != NULL) {
+	while (token != NULL)
+	{
 		argv[i++] = token;
 		token = strtok(NULL, " \t\n");
 	}
 	argv[i] = NULL;
 
-	for (j = 0; j < i; j++) {
+	for (j = 0; j < i; j++)
 		handle_special(argv[j]);
-	}
-
-	if (access(argv[0], X_OK) == 0) {
+	if (access(argv[0], X_OK) == 0)
+	{
 		pid = fork();
 
-		if (pid == -1) {
+		if (pid == -1)
+		{
 			perror("fork");
-		} else if (pid == 0) {
+		} else if (pid == 0)
+		{
 			char exe[50];
 
 			add_path(argv[0], exe, env);
 			execvp(exe, argv);
 			perror("hsh");
-
 			exit(1);
-		} else {
+		}
+		else
+		{
 			wait(NULL);
 		}
-	} else {
+	}
+	else
+	{
 		printf("Command not found: %s\n", argv[0]);
 	}
 }
