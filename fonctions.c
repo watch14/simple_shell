@@ -67,14 +67,12 @@ void handle_special(char *arg)
 	{
 		if (arg[k] == '"' || arg[k] == '\'' ||
 				arg[k] == '`' || arg[k] == '\\' ||
-				arg[k] == '*' || arg[k] == '&' ||
-				arg[k] == '#' || arg[k] == '|') {
-			{
-				memmove(arg + k + 1, arg + k, len - k + 1);
-				arg[k] = '\\';
-				len++;
-				k++;
-			}
+				arg[k] == '*' || arg[k] == '&' || arg[k] == '#')
+		{
+			memmove(arg + k + 1, arg + k, len - k + 1);
+			arg[k] = '\\';
+			len++;
+			k++;
 		}
 	}
 }
@@ -98,32 +96,26 @@ void execute(char *command, char **env)
 		token = strtok(NULL, " \t\n");
 	}
 	argv[i] = NULL;
-
 	for (j = 0; j < i; j++)
 		handle_special(argv[j]);
-	if (access(argv[0], X_OK) == 0)
+	pid = fork();
+
+	if (pid == -1)
 	{
-		pid = fork();
+		perror("fork");
+	}
+	else if (pid == 0)
+	{
+		char exe[50];
 
-		if (pid == -1)
-		{
-			perror("fork");
-		} else if (pid == 0)
-		{
-			char exe[50];
+		add_path(argv[0], exe, env);
+		execvp(exe, argv);
+		perror("hsh");
 
-			add_path(argv[0], exe, env);
-			execvp(exe, argv);
-			perror("hsh");
-			exit(1);
-		}
-		else
-		{
-			wait(NULL);
-		}
+		exit(1);
 	}
 	else
 	{
-		printf("Command not found: %s\n", argv[0]);
+		wait(NULL);
 	}
 }

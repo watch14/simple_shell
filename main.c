@@ -9,9 +9,8 @@
  * Return: Always 0 (successful execution)
  */
 
-int main(int argc, char **argv, char **env)
-{
-	char *buf;
+int main(int argc, char **argv, char **env) {
+	char *buf = NULL;
 	size_t n = 0;
 
 	(void)argc;
@@ -19,22 +18,26 @@ int main(int argc, char **argv, char **env)
 
 	buf = NULL;
 
-	if (getline(&buf, &n, stdin) == -1)
-	{
-		perror("getline");
-		return (1);
-	}
+	while (1) {
+		printf("$ ");
+		fflush(stdout);
 
-	while (buf)
-	{
-		if (strcmp(buf, "exit\n") == 0)
+		if (getline(&buf, &n, stdin) == -1 || feof(stdin)) {
+			printf("\n");
 			break;
+		}
+
+		if (strcmp(buf, "exit\n") == 0) {
+			break;
+		}
 
 		execute(buf, env);
 
-		printf("$ ");
-		getline(&buf, &n, stdin);
+		free(buf);
+		buf = NULL;
+		n = 0;
 	}
+
 	free(buf);
-	return (0);
+	return 0;
 }
