@@ -21,7 +21,7 @@ int main(int argc, char **argv, char **env)
 
 	buf = NULL;
 
-	printf("$ ");
+	write(1, "$ ", 2);
 	getline(&buf, &n, stdin);
 
 	while (buf)
@@ -34,7 +34,8 @@ int main(int argc, char **argv, char **env)
 
 		free(buf);
 		buf = NULL;
-		printf("$ ");
+		
+		write(1, "$ ", 2);
 		getline(&buf, &n, stdin);
 	}
 	return (0);
