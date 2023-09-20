@@ -13,4 +13,4 @@ void add_path(char *a, char *exe, char **env);
 void handle_special(char *arg);
 void execute(char *command, char **env, int line_number);
 
-#endif /* NAIN_H */
+#endif
