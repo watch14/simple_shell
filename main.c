@@ -12,8 +12,7 @@
 int main(int argc, char **argv, char **env)
 {
 	char *buf;
-	size_t n = 0;
-	ssize_t read_bytes;
+        size_t n = 0;
 
 	(void)argc;
 	(void)argv;
@@ -21,7 +20,8 @@ int main(int argc, char **argv, char **env)
 	buf = NULL;
 
 	printf("$ ");
-	while ((read_bytes = getline(&buf, &n, stdin)) != -1)
+	getline(&buf, &n, stdin);
+	while (buf)
 	{
 		if (strcmp(buf, "exit\n") == 0)
 			break;
@@ -32,5 +32,5 @@ int main(int argc, char **argv, char **env)
 		getline(&buf, &n, stdin);
 	}
 	free(buf);
-	return 0;
+	return (0);
 }
