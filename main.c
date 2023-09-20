@@ -8,28 +8,44 @@
  *
  * Return: Always 0 (successful execution)
  */
+
 int main(int argc, char **argv, char **env)
 {
 	char *buf;
 	size_t n = 0;
+	ssize_t getline_status;
 
 	(void)argc;
 	(void)argv;
 
 	buf = NULL;
 
-	printf("$ ");
-	getline(&buf, &n, stdin);
-	while (buf)
+	while (1)
 	{
+		printf("$ ");
+		getline_status = getline(&buf, &n, stdin);
+		if (getline_status == -1)
+		{
+			if (feof(stdin))
+			{
+				printf("\n");
+				break;
+			}
+			else
+			{
+				perror("getline");
+				exit(1);
+			}
+		}
+
 		if (strcmp(buf, "exit\n") == 0)
+		{
 			break;
+		}
 
 		execute(buf, env);
-
-		printf("$ ");
-		getline(&buf, &n, stdin);
 	}
+
 	free(buf);
 	return (0);
 }
