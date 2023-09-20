@@ -14,7 +14,6 @@ int main(int argc, char **argv, char **env)
 	char *buf;
 	size_t n = 0;
 	int ln = 1;
-	int rs;
 
 	(void)argc;
 	(void)argv;
