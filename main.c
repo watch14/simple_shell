@@ -9,10 +9,10 @@
  * Return: Always 0 (successful execution)
  */
 
-int main(int argc, char **argv, char **env)
-{
+int main(int argc, char **argv, char **env) {
 	char *buf;
-        size_t n = 0;
+	size_t n = 0;
+	ssize_t bytes_read;
 
 	(void)argc;
 	(void)argv;
@@ -20,17 +20,20 @@ int main(int argc, char **argv, char **env)
 	buf = NULL;
 
 	printf("$ ");
-	getline(&buf, &n, stdin);
-	while (buf)
-	{
+
+	while (1) {
+		bytes_read = getline(&buf, &n, stdin);
+		if (bytes_read == -1)
+			break;
+
 		if (strcmp(buf, "exit\n") == 0)
 			break;
 
 		execute(buf, env);
 
 		printf("$ ");
-		getline(&buf, &n, stdin);
 	}
+
 	free(buf);
 	return (0);
 }
