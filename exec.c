@@ -13,10 +13,8 @@ void execute_path(char *exe, char **argv, char **env, int line_number);
 void execute(char *command, char **env, int line_number)
 {
 	char *argv[20];
-	int i = 0;
+	int j, i = 0;
 	char *token = strtok(command, " \t\n");
-
-	pid_t pid;
 
 	while (token != NULL)
 	{
@@ -25,7 +23,7 @@ void execute(char *command, char **env, int line_number)
 	}
 	argv[i] = NULL;
 
-	for (int j = 0; j < i; j++)
+	for (j = 0; j < i; j++)
 		handle_special(argv[j]);
 
 	if (strchr(argv[0], '/') != NULL)
