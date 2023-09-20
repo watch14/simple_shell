@@ -82,6 +82,7 @@ void handle_special(char *arg)
  * @command: The command to execute.
  * @env: The environment variables array.
  */
+
 void execute(char *command, char **env)
 {
 	char *argv[20];
@@ -111,7 +112,7 @@ void execute(char *command, char **env)
 		char exe[50];
 
 		add_path(argv[0], exe, env);
-		execvp(exe, argv);
+		execve(exe, argv, env);
 		perror("./hsh");
 
 		exit(1);
@@ -121,4 +122,3 @@ void execute(char *command, char **env)
 		wait(NULL);
 	}
 }
-
