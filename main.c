@@ -21,9 +21,8 @@ int main(int argc, char **argv, char **env)
 
 	buf = NULL;
 
-	write(1, "$ ", 2);
+	printf("$ ");
 	getline(&buf, &n, stdin);
-
 	while (buf)
 	{
 		if (strcmp(buf, "exit\n") == 0)
@@ -34,7 +33,7 @@ int main(int argc, char **argv, char **env)
 
 		free(buf);
 		buf = NULL;
-		write(1, "$ ", 2);
+		printf("$ ");
 		getline(&buf, &n, stdin);
 	}
 	return (0);

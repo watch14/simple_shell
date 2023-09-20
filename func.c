@@ -1,5 +1,6 @@
 #include "main.h"
 
+
 /**
  * get_env - Get the value of an environment variable.
  * @env_var: The name of the environment variable to retrieve.
@@ -71,8 +72,8 @@ void handle_special(char *arg)
 	for (k = 0; k < len; k++)
 	{
 		if (arg[k] == '"' || arg[k] == '\'' ||
-			arg[k] == '`' || arg[k] == '\\' ||
-			arg[k] == '*' || arg[k] == '&' || arg[k] == '#')
+				arg[k] == '`' || arg[k] == '\\' ||
+				arg[k] == '*' || arg[k] == '&' || arg[k] == '#')
 		{
 			memmove(arg + k + 1, arg + k, len - k + 1);
 			arg[k] = '\\';
@@ -103,10 +104,8 @@ void execute(char *command, char **env, int line_number)
 		token = strtok(NULL, " \t\n");
 	}
 	argv[i] = NULL;
-
 	for (j = 0; j < i; j++)
 		handle_special(argv[j]);
-
 	pid = fork();
 
 	if (pid == -1)
