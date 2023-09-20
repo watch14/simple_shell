@@ -21,16 +21,10 @@ int main(int argc, char **argv, char **env)
 	buf = NULL;
 
 	printf("$ ");
-	rs = getline(&buf, &n, stdin);
+	getline(&buf, &n, stdin);
 
 	while (buf)
 	{
-		if (rs == -1)
-		{
-			free (buf);
-			buf = NULL;
-			return (0);
-		}
 		if (strcmp(buf, "exit\n") == 0)
 			break;
 
