@@ -112,7 +112,7 @@ void execute(char *command, char **env)
 
 		add_path(argv[0], exe, env);
 		execvp(exe, argv);
-		perror("hsh");
+		perror("./hsh");
 
 		exit(1);
 	}
