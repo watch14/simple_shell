@@ -26,9 +26,6 @@ int main(int argc, char **argv, char **env)
 
 	while (buf)
 	{
-		if (buf[0] == '\0') {
-			break;
-		}
 		if (strcmp(buf, "exit\n") == 0)
 			break;
 
