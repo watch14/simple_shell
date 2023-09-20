@@ -9,7 +9,8 @@
  * Return: Always 0 (successful execution)
  */
 
-int main(int argc, char **argv, char **env) {
+int main(int argc, char **argv, char **env)
+{
 	char *buf;
 	size_t n = 0;
 	ssize_t bytes_read;
@@ -19,9 +20,10 @@ int main(int argc, char **argv, char **env) {
 
 	buf = NULL;
 
-	printf("$ ");
+	write(1, "$ ", 2);
 
-	while (1) {
+	while (1)
+	{
 		bytes_read = getline(&buf, &n, stdin);
 		if (bytes_read == -1)
 			break;
@@ -31,7 +33,7 @@ int main(int argc, char **argv, char **env) {
 
 		execute(buf, env);
 
-		printf("$ ");
+		write(1, "$ ", 2);
 	}
 
 	free(buf);
