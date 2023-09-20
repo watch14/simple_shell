@@ -1,5 +1,6 @@
 #include "main.h"
 
+
 /**
  * get_env - Get the value of an environment variable.
  * @env_var: The name of the environment variable to retrieve.
@@ -85,9 +86,11 @@ void handle_special(char *arg)
  * execute - Execute a command in a new process.
  * @command: The command to execute.
  * @env: The environment variables array.
+ * @line_number: The line number of the command in the shell script.
  */
 
-void execute(char *command, char **env, int line_number) {
+void execute(char *command, char **env, int line_number)
+{
 	char *argv[20];
 	int i = 0, j;
 	char *token = strtok(command, " \t\n");
@@ -102,6 +105,7 @@ void execute(char *command, char **env, int line_number) {
 
 	for (j = 0; j < i; j++)
 		handle_special(argv[j]);
+
 	pid = fork();
 
 	if (pid == -1) {
@@ -119,6 +123,5 @@ void execute(char *command, char **env, int line_number) {
 		exit(1);
 	} else {
 		wait(NULL);
-		line_number++;
 	}
 }

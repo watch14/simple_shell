@@ -15,20 +15,25 @@ int main(int argc, char **argv, char **env)
 	size_t n = 0;
 	int ln = 1;
 
+
 	(void)argc;
 	(void)argv;
 
 	buf = NULL;
 
 	printf("$ ");
-	while ((getline(&buf, &n, stdin)) > 0 && !feof(stdin))
+	getline(&buf, &n, stdin);
+	while (buf)
 	{
 		if (strcmp(buf, "exit\n") == 0)
 			break;
 
 		execute(buf, env, ln);
 		ln++;
+
+
 		printf("$ ");
+		getline(&buf, &n, stdin);
 	}
 	free(buf);
 	return (0);
