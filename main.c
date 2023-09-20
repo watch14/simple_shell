@@ -14,17 +14,23 @@ int main(int argc, char **argv, char **env)
 	char *buf;
 	size_t n = 0;
 	int ln = 1;
-
+	int rs;
 
 	(void)argc;
 	(void)argv;
-
 	buf = NULL;
 
 	printf("$ ");
-	getline(&buf, &n, stdin);
+	rs = getline(&buf, &n, stdin);
+
 	while (buf)
 	{
+		if (rs == -1)
+		{
+			free (buf);
+			buf = NULL;
+			return (0);
+		}
 		if (strcmp(buf, "exit\n") == 0)
 			break;
 
@@ -36,5 +42,6 @@ int main(int argc, char **argv, char **env)
 		printf("$ ");
 		getline(&buf, &n, stdin);
 	}
+
 	return (0);
 }
