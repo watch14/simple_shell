@@ -25,8 +25,6 @@ int main(int argc, char **argv, char **env)
 	getline(&buf, &n, stdin);
 	while (buf)
 	{
-		if(buf[0] == '\0')
-			break;
 		if (strcmp(buf, "exit\n") == 0)
 			break;
 
