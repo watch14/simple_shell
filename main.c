@@ -13,6 +13,7 @@ int main(int argc, char **argv, char **env)
 {
 	char *buf;
 	size_t n = 0;
+	int ln = 1;
 
 	(void)argc;
 	(void)argv;
@@ -25,8 +26,8 @@ int main(int argc, char **argv, char **env)
 		if (strcmp(buf, "exit\n") == 0)
 			break;
 
-		execute(buf, env);
-
+		execute(buf, env, ln);
+		ln++;
 		printf("$ ");
 	}
 	free(buf);
