@@ -82,11 +82,11 @@ void handle_special(char *arg)
  * @command: The command to execute.
  * @env: The environment variables array.
  */
-
 void execute(char *command, char **env)
 {
 	char *argv[20];
 	int i = 0, j;
+
 	char *token = strtok(command, " \t\n");
 	pid_t pid;
 
@@ -96,6 +96,7 @@ void execute(char *command, char **env)
 		token = strtok(NULL, " \t\n");
 	}
 	argv[i] = NULL;
+
 	for (j = 0; j < i; j++)
 		handle_special(argv[j]);
 
@@ -112,6 +113,7 @@ void execute(char *command, char **env)
 		add_path(argv[0], exe, env);
 		execvp(exe, argv);
 		perror("hsh");
+
 		exit(1);
 	}
 	else
@@ -119,3 +121,4 @@ void execute(char *command, char **env)
 		wait(NULL);
 	}
 }
+
