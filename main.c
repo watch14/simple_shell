@@ -34,7 +34,6 @@ int main(int argc, char **argv, char **env)
 
 		free(buf);
 		buf = NULL;
-		
 		write(1, "$ ", 2);
 		getline(&buf, &n, stdin);
 	}
