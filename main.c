@@ -23,7 +23,7 @@ int main(int argc, char **argv, char **env)
 
 	printf("$ ");
 	getline(&buf, &n, stdin);
-	while (buf)
+	while (buf && buf[0] != '\0')
 	{
 		if (strcmp(buf, "exit\n") == 0)
 			break;
@@ -31,10 +31,10 @@ int main(int argc, char **argv, char **env)
 		execute(buf, env, ln);
 		ln++;
 
-
+		free(buf);
+		buf = NULL;
 		printf("$ ");
 		getline(&buf, &n, stdin);
 	}
-	free(buf);
 	return (0);
 }
