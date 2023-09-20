@@ -13,29 +13,22 @@ int main(int argc, char **argv, char **env)
 {
 	char *buf;
 	size_t n = 0;
-	ssize_t bytes_read;
 
 	(void)argc;
 	(void)argv;
 
 	buf = NULL;
 
-	write(1, "$ ", 2);
-
-	while (1)
+	printf("$ ");
+	while ((getline(&buf, &n, stdin)) > 0 && !feof(stdin))
 	{
-		bytes_read = getline(&buf, &n, stdin);
-		if (bytes_read == -1)
-			break;
-
 		if (strcmp(buf, "exit\n") == 0)
 			break;
 
 		execute(buf, env);
 
-		write(1, "$ ", 2);
+		printf("$ ");
 	}
-
 	free(buf);
 	return (0);
 }
