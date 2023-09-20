@@ -63,6 +63,10 @@ void handle_special(char *arg)
 	int len = strlen(arg);
 	int k;
 
+	if (arg == NULL) {
+		return;
+	}
+
 	for (k = 0; k < len; k++)
 	{
 		if (arg[k] == '"' || arg[k] == '\'' ||
@@ -81,19 +85,16 @@ void handle_special(char *arg)
  * execute - Execute a command in a new process.
  * @command: The command to execute.
  * @env: The environment variables array.
- * @line_number: line number ++.
  */
 
-void execute(char *command, char **env, int line_number)
-{
+void execute(char *command, char **env, int line_number) {
 	char *argv[20];
 	int i = 0, j;
 	char *token = strtok(command, " \t\n");
 
 	pid_t pid;
 
-	while (token != NULL)
-	{
+	while (token != NULL) {
 		argv[i++] = token;
 		token = strtok(NULL, " \t\n");
 	}
@@ -103,26 +104,20 @@ void execute(char *command, char **env, int line_number)
 		handle_special(argv[j]);
 	pid = fork();
 
-	if (pid == -1)
-	{
+	if (pid == -1) {
 		perror("fork");
-	}
-	else if (pid == 0)
-	{
+	} else if (pid == 0) {
 		char exe[50];
 
 		add_path(argv[0], exe, env);
-		if (exe[0] == '\0')
-		{
+		if (exe[0] == '\0') {
 			fprintf(stderr, "hsh: %d: %s: not found\n", line_number, argv[0]);
 			exit(1);
 		}
 		execve(exe, argv, env);
 		fprintf(stderr, "hsh: %d: %s: not found\n", line_number, argv[0]);
 		exit(1);
-	}
-	else
-	{
+	} else {
 		wait(NULL);
 		line_number++;
 	}
