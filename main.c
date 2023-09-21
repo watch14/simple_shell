@@ -25,7 +25,6 @@ int main(int argc, char **argv, char **env)
 	while (buf)
 	{
 		if (strcmp(buf, "exit\n") == 0)
-			printf("\n");
 			break;
 
 		execute(buf, env, ln);
